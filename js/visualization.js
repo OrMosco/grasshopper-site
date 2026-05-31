@@ -205,7 +205,7 @@ function createNumberSprite(number, color) {
   ctx.fillText(number.toString(), 32, 32);
 
   const texture = new THREE.CanvasTexture(canvas);
-  const mat = new THREE.SpriteMaterial({ map: texture, depthTest: false });
+  const mat = new THREE.SpriteMaterial({ map: texture });
   const sprite = new THREE.Sprite(mat);
   sprite.scale.set(0.9, 0.9, 1);
   return sprite;

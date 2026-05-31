@@ -75,15 +75,15 @@ const GROUP_2 = [
 // ========================================
 
 // יוצר רשימת סטודנטים ריקה לקבוצה חדשה
-function _makeStudents(count) {
+function createEmptyStudentList(count) {
   return Array.from({ length: count }, (_, i) => ({ name: `סטודנט ${i + 1}`, attendance: [] }));
 }
 
 // קבוצה 3 - שמות סטודנטים ונוכחות (ערוך את השמות בהתאם)
-const GROUP_3 = _makeStudents(24);
+const GROUP_3 = createEmptyStudentList(24);
 
 // קבוצה 4 - שמות סטודנטים ונוכחות (ערוך את השמות בהתאם)
-const GROUP_4 = _makeStudents(24);
+const GROUP_4 = createEmptyStudentList(24);
 
 // מערך כל הקבוצות - הוסף קבוצות נוספות כאן
 const GROUPS = [GROUP_1, GROUP_2, GROUP_3, GROUP_4];
