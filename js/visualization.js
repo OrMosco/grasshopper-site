@@ -15,21 +15,30 @@ let hoveredTower = null;
 
 const COLORS = {
   zero:   0x333355,   // לא נכח אף פעם
-  low:    0xff4757,   // נוכחות נמוכה
-  mid:    0xffa502,   // נוכחות בינונית
-  high:   0x00d4aa,   // נוכחות גבוהה
-  full:   0x7b68ee,   // נוכחות מלאה
   ground: 0x15152a,
   grid:   0x2a2a4e,
 };
 
-function getAttendanceColor(count, maxLessons) {
+// 12 colors, one per lesson attended (1–12), red → orange → teal → purple
+const LESSON_COLORS = [
+  0xff4757, // 1
+  0xff6040, // 2
+  0xff7700, // 3
+  0xffa502, // 4
+  0xffc300, // 5
+  0xe6db00, // 6
+  0x8bc34a, // 7
+  0x00c785, // 8
+  0x00d4aa, // 9
+  0x00b4d8, // 10
+  0x7b68ee, // 11
+  0x9c4dff, // 12
+];
+
+function getAttendanceColor(count) {
   if (count === 0) return COLORS.zero;
-  const ratio = count / Math.max(maxLessons, 1);
-  if (ratio <= 0.25) return COLORS.low;
-  if (ratio <= 0.5) return COLORS.mid;
-  if (ratio < 1) return COLORS.high;
-  return COLORS.full;
+  const idx = Math.min(Math.max(count, 1), LESSON_COLORS.length) - 1;
+  return LESSON_COLORS[idx];
 }
 
 function initVisualization() {
@@ -166,13 +175,13 @@ function buildTowers(groupNum) {
     const x = col * spacing - offsetX;
     const z = row * spacing - offsetZ;
 
-    const attendanceCount = getStudentAttendanceCount(student);
-    const tower = createTower(student, attendanceCount, x, z, index);
+    const attendanceCount = getStudentAttendanceCount(student, groupNum);
+    const tower = createTower(student, attendanceCount, x, z, index, groupNum);
     towers.push(tower);
   });
 }
 
-function createTower(student, attendanceCount, x, z, index) {
+function createTower(student, attendanceCount, x, z, index, groupNum) {
   const group = new THREE.Group();
   group.position.set(x, 0, z);
 
@@ -180,7 +189,7 @@ function createTower(student, attendanceCount, x, z, index) {
   const minHeight = 0.3;
   const heightRatio = attendanceCount / Math.max(CURRENT_LESSON, 1);
   const height = minHeight + heightRatio * (maxHeight - minHeight);
-  const color = getAttendanceColor(attendanceCount, CURRENT_LESSON);
+  const color = getAttendanceColor(attendanceCount);
 
   // Base platform (circle on ground)
   const baseGeo = new THREE.CylinderGeometry(1.2, 1.2, 0.1, 32);
@@ -264,6 +273,7 @@ function createTower(student, attendanceCount, x, z, index) {
   return {
     group,
     tower,
+    groupNum,
     student,
     attendanceCount,
     baseY: 0,
@@ -338,7 +348,7 @@ function onMouseMove(event) {
     const data = intersects[0].object.userData.towerData;
     if (data) {
       hoveredTower = data;
-      const percentage = getAttendancePercentage(data.student);
+      const percentage = getAttendancePercentage(data.student, data.groupNum);
 
       tooltip.style.display = 'block';
       tooltip.style.left = (event.clientX + 15) + 'px';
@@ -347,7 +357,7 @@ function onMouseMove(event) {
       const tooltipName = tooltip.querySelector('.tooltip-name');
       const tooltipInfo = tooltip.querySelector('.tooltip-info');
       tooltipName.textContent = data.student.name;
-      tooltipInfo.textContent = `נוכחות: ${data.attendanceCount} / ${CURRENT_LESSON} שיעורים · ${percentage.toFixed(0)}%`;
+      tooltipInfo.textContent = `נוכחות: ${data.attendanceCount} / ${TOTAL_LESSONS} שיעורים · ${percentage.toFixed(0)}%`;
     }
   } else {
     tooltip.style.display = 'none';

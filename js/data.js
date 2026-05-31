@@ -7,7 +7,7 @@
 const CURRENT_LESSON = 1;
 
 // סה"כ מספר שיעורים בקורס
-const TOTAL_LESSONS = 13;
+const TOTAL_LESSONS = 12;
 
 // קוד נוכחות לשיעור הנוכחי (שנה כל שבוע כדי למנוע רישום מזויף)
 // הסטודנטים יצטרכו להכניס את הקוד הזה בעמוד הנוכחות
@@ -74,13 +74,20 @@ const GROUP_2 = [
 // פונקציות עזר
 // ========================================
 
-function getStudentAttendanceCount(student) {
-  return student.attendance.length;
+function getStudentAttendanceCount(student, group) {
+  const base = student.attendance ? [...student.attendance] : [];
+  if (typeof localStorage !== 'undefined' && group) {
+    const historyKey = `attendance_history_${group}_${student.name}`;
+    const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+    const merged = new Set([...base, ...history]);
+    return merged.size;
+  }
+  return base.length;
 }
 
-function getAttendancePercentage(student) {
+function getAttendancePercentage(student, group) {
   if (CURRENT_LESSON === 0) return 0;
-  return (student.attendance.length / CURRENT_LESSON) * 100;
+  return (getStudentAttendanceCount(student, group) / CURRENT_LESSON) * 100;
 }
 
 function getAllStudents(group) {
