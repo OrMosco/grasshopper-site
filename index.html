@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>הבעה במחשב | אוניברסיטת חיפה</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-content">
+      <div class="logo">
+        <div class="logo-icon">GH</div>
+        <div class="logo-text">
+          <h1>הבעה במחשב</h1>
+          <span>תכנון פרמטרי וגראסהופר · אוניברסיטת חיפה</span>
+        </div>
+      </div>
+      <nav>
+        <a href="index.html" class="active">ראשי</a>
+        <a href="attendance.html">רישום נוכחות</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero fade-in">
+    <h2>נוכחות כהבעה גיאומטרית</h2>
+    <p>כל סטודנט מיוצג כמגדל תלת-מימדי. הגובה, הסיבוב והצבע משתנים בהתאם למספר השיעורים שנכחת בהם.</p>
+  </section>
+
+  <!-- Lesson Info -->
+  <div class="lesson-bar">
+    <div class="lesson-info">
+      <div class="lesson-number">
+        <span class="lesson-badge" id="lesson-badge">שיעור 1 מתוך 13</span>
+        <span class="lesson-label">שיעור נוכחי</span>
+      </div>
+      <div class="lesson-number">
+        <span class="lesson-label">גרור לסיבוב · גלגל לזום</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Group Controls -->
+  <div class="controls">
+    <button class="group-btn active" data-group="1" onclick="switchGroup(1)">קבוצה 1</button>
+    <button class="group-btn" data-group="2" onclick="switchGroup(2)">קבוצה 2</button>
+  </div>
+
+  <!-- 3D Visualization -->
+  <div class="viz-container">
+    <div class="viz-canvas-wrapper">
+      <div id="three-canvas"></div>
+
+      <!-- Legend -->
+      <div class="viz-legend">
+        <h4>מקרא נוכחות</h4>
+        <div class="legend-item">
+          <div class="legend-color" style="background: #333355;"></div>
+          <span>לא נכח/ה</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background: #ff4757;"></div>
+          <span>נוכחות נמוכה (עד 25%)</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background: #ffa502;"></div>
+          <span>נוכחות בינונית (26-50%)</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background: #00d4aa;"></div>
+          <span>נוכחות גבוהה (51-99%)</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background: #7b68ee;"></div>
+          <span>נוכחות מלאה (100%)</span>
+        </div>
+      </div>
+
+      <div class="viz-overlay">
+        Three.js · WebGL
+      </div>
+    </div>
+  </div>
+
+  <!-- Tooltip -->
+  <div id="tooltip">
+    <div class="tooltip-name"></div>
+    <div class="tooltip-info"></div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>הבעה במחשב · תכנון פרמטרי וגראסהופר · אוניברסיטת חיפה © 2025</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/visualization.js"></script>
+
+</body>
+</html>

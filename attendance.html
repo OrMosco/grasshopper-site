@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>רישום נוכחות | הבעה במחשב</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-content">
+      <div class="logo">
+        <div class="logo-icon">GH</div>
+        <div class="logo-text">
+          <h1>הבעה במחשב</h1>
+          <span>תכנון פרמטרי וגראסהופר · אוניברסיטת חיפה</span>
+        </div>
+      </div>
+      <nav>
+        <a href="index.html">ראשי</a>
+        <a href="attendance.html" class="active">רישום נוכחות</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Attendance Form -->
+  <div class="attendance-container fade-in">
+    <div class="attendance-card">
+      <h2>📋 רישום נוכחות</h2>
+      <p class="subtitle">
+        <span id="current-lesson-display">שיעור 1</span>
+        · הכנס/י את שמך לרישום נוכחות
+      </p>
+
+      <div class="form-group">
+        <label for="group-select">קבוצה</label>
+        <select id="group-select">
+          <option value="">-- בחר/י קבוצה --</option>
+          <option value="1">קבוצה 1</option>
+          <option value="2">קבוצה 2</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="name-select">שם</label>
+        <select id="name-select" disabled>
+          <option value="">-- בחר/י קבוצה קודם --</option>
+        </select>
+      </div>
+
+      <button class="submit-btn pulse" id="submit-btn">
+        ✓ אישור נוכחות
+      </button>
+
+      <div id="status-message" class="status-message"></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>הבעה במחשב · תכנון פרמטרי וגראסהופר · אוניברסיטת חיפה © 2025</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/attendance.js"></script>
+
+</body>
+</html>
