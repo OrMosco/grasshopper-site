@@ -272,6 +272,7 @@ function createTower(student, attendanceCount, x, z, index, groupNum) {
 
   return {
     group,
+    tower,
     groupNum,
     student,
     attendanceCount,

@@ -87,7 +87,7 @@ function getStudentAttendanceCount(student, group) {
 
 function getAttendancePercentage(student, group) {
   if (CURRENT_LESSON === 0) return 0;
-  return (getStudentAttendanceCount(student, group) / TOTAL_LESSONS) * 100;
+  return (getStudentAttendanceCount(student, group) / CURRENT_LESSON) * 100;
 }
 
 function getAllStudents(group) {
