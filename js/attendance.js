@@ -44,15 +44,15 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Check if already submitted today using localStorage
-    const todayKey = `attendance_${CURRENT_LESSON}_${group}_${name}`;
-    if (localStorage.getItem(todayKey)) {
+    // Check if already submitted for this lesson using localStorage
+    const lessonKey = `attendance_${CURRENT_LESSON}_${group}_${name}`;
+    if (localStorage.getItem(lessonKey)) {
       showStatus('כבר נרשמת לשיעור זה! ✓', 'warning');
       return;
     }
 
     // Mark attendance in localStorage
-    localStorage.setItem(todayKey, new Date().toISOString());
+    localStorage.setItem(lessonKey, new Date().toISOString());
 
     // Track all attendances for this student
     const historyKey = `attendance_history_${group}_${name}`;

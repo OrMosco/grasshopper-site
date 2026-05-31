@@ -178,7 +178,7 @@ function createTower(student, attendanceCount, x, z, index) {
 
   const maxHeight = 8;
   const minHeight = 0.3;
-  const heightRatio = attendanceCount / Math.max(TOTAL_LESSONS, 1);
+  const heightRatio = attendanceCount / Math.max(CURRENT_LESSON, 1);
   const height = minHeight + heightRatio * (maxHeight - minHeight);
   const color = getAttendanceColor(attendanceCount, CURRENT_LESSON);
 
@@ -195,7 +195,7 @@ function createTower(student, attendanceCount, x, z, index) {
   group.add(base);
 
   // Main tower - twisted box geometry
-  const segments = Math.max(2, attendanceCount * 2);
+  const segments = Math.min(Math.max(2, attendanceCount * 2), 16);
   const towerGeo = new THREE.BoxGeometry(1, height, 1, 1, segments, 1);
 
   // Twist the vertices based on attendance
