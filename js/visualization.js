@@ -3,6 +3,9 @@
 // הבעה במחשב - אוניברסיטת חיפה
 // ========================================
 
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
 let scene, camera, renderer, controls;
 let towers = [];
 let raycaster, mouse;
@@ -57,7 +60,7 @@ function initVisualization() {
   container.appendChild(renderer.domElement);
 
   // Controls
-  controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.05;
   controls.minDistance = 10;
@@ -340,13 +343,11 @@ function onMouseMove(event) {
       tooltip.style.display = 'block';
       tooltip.style.left = (event.clientX + 15) + 'px';
       tooltip.style.top = (event.clientY - 10) + 'px';
-      tooltip.innerHTML = `
-        <div class="tooltip-name">${data.student.name}</div>
-        <div class="tooltip-info">
-          נוכחות: ${data.attendanceCount} / ${CURRENT_LESSON} שיעורים<br>
-          ${percentage.toFixed(0)}%
-        </div>
-      `;
+
+      const tooltipName = tooltip.querySelector('.tooltip-name');
+      const tooltipInfo = tooltip.querySelector('.tooltip-info');
+      tooltipName.textContent = data.student.name;
+      tooltipInfo.textContent = `נוכחות: ${data.attendanceCount} / ${CURRENT_LESSON} שיעורים · ${percentage.toFixed(0)}%`;
     }
   } else {
     tooltip.style.display = 'none';
@@ -362,6 +363,9 @@ function switchGroup(groupNum) {
     btn.classList.toggle('active', parseInt(btn.dataset.group) === groupNum);
   });
 }
+
+// Expose to global scope for HTML onclick attributes
+window.switchGroup = switchGroup;
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
