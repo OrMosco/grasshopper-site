@@ -181,6 +181,36 @@ function buildTowers(groupNum) {
   });
 }
 
+function createNumberSprite(number, color) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 64;
+  canvas.height = 64;
+  const ctx = canvas.getContext('2d');
+
+  const hex = '#' + color.toString(16).padStart(6, '0');
+
+  ctx.beginPath();
+  ctx.arc(32, 32, 28, 0, Math.PI * 2);
+  ctx.fillStyle = hex;
+  ctx.fill();
+
+  ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 26px Arial';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(number.toString(), 32, 32);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  const mat = new THREE.SpriteMaterial({ map: texture });
+  const sprite = new THREE.Sprite(mat);
+  sprite.scale.set(0.9, 0.9, 1);
+  return sprite;
+}
+
 function createTower(student, attendanceCount, x, z, index, groupNum) {
   const group = new THREE.Group();
   group.position.set(x, 0, z);
@@ -191,82 +221,39 @@ function createTower(student, attendanceCount, x, z, index, groupNum) {
   const height = minHeight + heightRatio * (maxHeight - minHeight);
   const color = getAttendanceColor(attendanceCount);
 
-  // Base platform (circle on ground)
-  const baseGeo = new THREE.CylinderGeometry(1.2, 1.2, 0.1, 32);
+  // Hexagonal base disc
+  const baseGeo = new THREE.CylinderGeometry(0.9, 0.9, 0.08, 6);
   const baseMat = new THREE.MeshStandardMaterial({
     color: 0x1a1a2e,
     roughness: 0.8,
     metalness: 0.2,
   });
   const base = new THREE.Mesh(baseGeo, baseMat);
-  base.position.y = 0.05;
+  base.rotation.y = Math.PI / 12; // align with tower
+  base.position.y = 0.04;
   base.receiveShadow = true;
   group.add(base);
 
-  // Main tower - twisted box geometry
-  const segments = Math.min(Math.max(2, attendanceCount * 2), 16);
-  const towerGeo = new THREE.BoxGeometry(1, height, 1, 1, segments, 1);
-
-  // Twist the vertices based on attendance
-  const positions = towerGeo.attributes.position;
-  const twistAmount = attendanceCount * 0.15;
-  for (let i = 0; i < positions.count; i++) {
-    const y = positions.getY(i);
-    const normalizedY = (y + height / 2) / height;
-    const angle = normalizedY * twistAmount;
-    const px = positions.getX(i);
-    const pz = positions.getZ(i);
-    positions.setX(i, px * Math.cos(angle) - pz * Math.sin(angle));
-    positions.setZ(i, px * Math.sin(angle) + pz * Math.cos(angle));
-  }
-  positions.needsUpdate = true;
-  towerGeo.computeVertexNormals();
-
+  // Hexagonal prism - extruded polygon
+  const towerGeo = new THREE.CylinderGeometry(0.8, 0.8, height, 6);
   const towerMat = new THREE.MeshStandardMaterial({
     color: color,
     roughness: 0.4,
     metalness: 0.6,
     emissive: color,
-    emissiveIntensity: 0.1,
+    emissiveIntensity: 0.15,
   });
   const tower = new THREE.Mesh(towerGeo, towerMat);
-  tower.position.y = height / 2 + 0.1;
+  tower.position.y = height / 2 + 0.08;
+  tower.rotation.y = Math.PI / 12; // 15° rotation around polygon center
   tower.castShadow = true;
   tower.receiveShadow = true;
   group.add(tower);
 
-  // Top accent sphere
-  if (attendanceCount > 0) {
-    const sphereSize = 0.2 + attendanceCount * 0.05;
-    const sphereGeo = new THREE.SphereGeometry(sphereSize, 16, 16);
-    const sphereMat = new THREE.MeshStandardMaterial({
-      color: color,
-      emissive: color,
-      emissiveIntensity: 0.4,
-      roughness: 0.2,
-      metalness: 0.8,
-    });
-    const sphere = new THREE.Mesh(sphereGeo, sphereMat);
-    sphere.position.y = height + 0.1 + sphereSize;
-    group.add(sphere);
-  }
-
-  // Rings around tower based on attendance
-  for (let i = 0; i < attendanceCount; i++) {
-    const ringY = (height / (attendanceCount + 1)) * (i + 1) + 0.1;
-    const ringGeo = new THREE.TorusGeometry(0.8, 0.04, 8, 32);
-    const ringMat = new THREE.MeshStandardMaterial({
-      color: color,
-      emissive: color,
-      emissiveIntensity: 0.3,
-      transparent: true,
-      opacity: 0.6,
-    });
-    const ring = new THREE.Mesh(ringGeo, ringMat);
-    ring.position.y = ringY;
-    ring.rotation.x = Math.PI / 2;
-    group.add(ring);
-  }
+  // Attendance number label on top
+  const sprite = createNumberSprite(attendanceCount, color);
+  sprite.position.y = height + 0.08 + 0.6;
+  group.add(sprite);
 
   scene.add(group);
 
@@ -278,7 +265,6 @@ function createTower(student, attendanceCount, x, z, index, groupNum) {
     attendanceCount,
     baseY: 0,
     index,
-    rotationSpeed: 0.002 + attendanceCount * 0.003,
     floatOffset: index * 0.5,
   };
 }
@@ -290,9 +276,6 @@ function animate() {
 
   // Animate towers
   towers.forEach(t => {
-    // Slow rotation based on attendance
-    t.group.rotation.y += t.rotationSpeed;
-
     // Gentle float
     const floatY = Math.sin(time + t.floatOffset) * 0.1;
     t.group.position.y = t.baseY + floatY;

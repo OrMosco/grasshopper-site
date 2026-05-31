@@ -45,9 +45,7 @@
   </div>
 
   <!-- Group Controls -->
-  <div class="controls">
-    <button class="group-btn active" data-group="1" onclick="switchGroup(1)">קבוצה 1</button>
-    <button class="group-btn" data-group="2" onclick="switchGroup(2)">קבוצה 2</button>
+  <div class="controls" id="group-controls">
   </div>
 
   <!-- 3D Visualization -->
@@ -139,6 +137,19 @@
   }
   </script>
   <script src="js/data.js"></script>
+  <script>
+    (function () {
+      var container = document.getElementById('group-controls');
+      GROUPS.forEach(function (_, i) {
+        var btn = document.createElement('button');
+        btn.className = 'group-btn' + (i === 0 ? ' active' : '');
+        btn.dataset.group = i + 1;
+        btn.textContent = 'קבוצה ' + (i + 1);
+        btn.setAttribute('onclick', 'switchGroup(' + (i + 1) + ')');
+        container.appendChild(btn);
+      });
+    })();
+  </script>
   <script type="module" src="js/visualization.js"></script>
 
 </body>

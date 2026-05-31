@@ -74,6 +74,20 @@ const GROUP_2 = [
 // פונקציות עזר
 // ========================================
 
+// יוצר רשימת סטודנטים ריקה לקבוצה חדשה
+function createEmptyStudentList(count) {
+  return Array.from({ length: count }, (_, i) => ({ name: `סטודנט ${i + 1}`, attendance: [] }));
+}
+
+// קבוצה 3 - שמות סטודנטים ונוכחות (ערוך את השמות בהתאם)
+const GROUP_3 = createEmptyStudentList(24);
+
+// קבוצה 4 - שמות סטודנטים ונוכחות (ערוך את השמות בהתאם)
+const GROUP_4 = createEmptyStudentList(24);
+
+// מערך כל הקבוצות - הוסף קבוצות נוספות כאן
+const GROUPS = [GROUP_1, GROUP_2, GROUP_3, GROUP_4];
+
 function getStudentAttendanceCount(student, group) {
   const base = student.attendance ? [...student.attendance] : [];
   if (typeof localStorage !== 'undefined' && group) {
@@ -91,9 +105,8 @@ function getAttendancePercentage(student, group) {
 }
 
 function getAllStudents(group) {
-  if (group === 1) return GROUP_1;
-  if (group === 2) return GROUP_2;
-  return [...GROUP_1, ...GROUP_2];
+  if (group >= 1 && group <= GROUPS.length) return GROUPS[group - 1];
+  return GROUPS.flat();
 }
 
 function findStudent(name, group) {
